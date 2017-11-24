@@ -1,0 +1,13 @@
+     #####Linux####
+
+#!/bin/bash
+oldsum=''
+cursum=$(shasum -a 256 /etc/passwd | cut -d " " -f1)
+if [[ "$oldsum" = "$cursum" ]];
+then
+        echo "OK: /etc/passwd file is OK"
+        exit 0
+else
+        echo "CRITICAL: /etc/passwd file has been CHANGED"
+        exit 2
+fi
