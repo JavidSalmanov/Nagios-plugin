@@ -1,0 +1,76 @@
+#!/bin/bash
+year="$(echo | openssl s_client -servername $1 -connect $1:$2 2>/dev/null | openssl x509 -noout -dates | sed -n 2p | cut -d "=" -f2 | cut -d " " -f4)"
+month="$(echo | openssl s_client -servername $1 -connect $1:$2 2>/dev/null | openssl x509 -noout -dates | sed -n 2p | cut -d "=" -f2 | cut -d " " -f1)"
+day="$(echo | openssl s_client -servername $1 -connect $1:$2 2>/dev/null | openssl x509 -noout -dates | sed -n 2p | cut -d "=" -f2 | cut -d " " -f2)"
+g="$(date | cut -d  " " -f4 )"
+a="$(date | cut -d  " " -f2 )"
+i="$(date | cut -d  " " -f7 )"
+
+##
+if [[ $a == "Jan" ]]; then
+dm=1
+elif [[ $a == "Feb" ]]; then
+dm=2
+elif [[ $a == "Mar" ]]; then
+dm=3
+elif [[ $a == "Apr" ]]; then
+dm=4
+elif [[ $a == "May" ]]; then
+dm=5
+elif [[ $a == "Jun" ]]; then
+dm=6
+elif [[ $a == "Jul" ]]; then
+dm=7
+elif [[ $a == "Aug" ]]; then
+dm=8
+elif [[ $a == "Sep" ]]; then
+dm=9
+elif [[ $a == "Oct" ]]; then
+dm=10
+elif [[ $a == "Nov" ]]; then
+dm=11
+elif [[ $a == "Dec" ]]; then
+dm=12
+fi
+#
+if [[ $month == "Jan" ]]; then
+dmonth=1
+elif [[ $month == "Feb" ]]; then
+dmonth=2
+elif [[ $month == "Mar" ]]; then
+dmonth=3
+elif [[ $month == "Apr" ]]; then
+dmonth=4
+elif [[ $month == "May" ]]; then
+dmonth=5
+elif [[ $month == "Jun" ]]; then
+dmonth=6
+elif [[ $month == "Jul" ]]; then
+dmonth=7
+elif [[ $month == "Aug" ]]; then
+dmonth=8
+elif [[ $month == "Sep" ]]; then
+dmonth=9
+elif [[ $month == "Oct" ]]; then
+dmonth=10
+elif [[ $month == "Nov" ]]; then
+dmonth=11
+elif [[ $month == "Dec" ]]; then
+dmonth=12
+fi
+let "d= $day - $g"
+let "diff= $dmonth - $dm"
+###
+if (("$year" > "$i")); then
+echo "OK. Certificate for $1 is valid till ---- $day $month $year "
+exit 0
+elif [ "$year" -eq "$i" ] && [ "$diff" -ge 1 ]; then
+echo "OK. Certificate for $1 is valid till ---- $day $month $year "
+exit 0
+elif [ "$year" -eq "$i" ] && [ "$diff" -eq 0 ] && [ "$d" -ge 7 ]; then
+echo "Warning. Only $d days left until the certificate expires"
+exit 1
+else
+echo "Warning. Only $d days left until the certificate expires"
+exit 2
+fi
