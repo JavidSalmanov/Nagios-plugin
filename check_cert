@@ -1,4 +1,14 @@
 #!/bin/bash
+
+if [[ $# -ne 2 ]] ; then
+echo " "
+echo "Please enter the hostname and port number!"
+echo " "
+echo "check_cert HOSTNAME  PORT_NUMBER "
+echo " "
+echo "Example: check_cert gmail.com 443"
+echo " "
+else
 space="$(echo | openssl s_client -servername $1 -connect $1:$2 2>/dev/null | openssl x509 -noout -dates | sed -n 2p)"
 year="$(echo $space| cut -d "=" -f2 | cut -d " " -f4)"
 month="$(echo $space| cut -d "=" -f2 | cut -d " " -f1)"
@@ -6,7 +16,6 @@ day="$(echo $space| cut -d "=" -f2 | cut -d " " -f2)"
 g="$(date +%d/%b/%Y | cut -d "/" -f1)"
 a="$(date +%d/%b/%Y | cut -d "/" -f2)"
 i="$(date +%d/%b/%Y | cut -d "/" -f3)"
-
 ##
 if [[ $a == "Jan" ]]; then
 dm=1
@@ -75,5 +84,5 @@ else
 echo "Warning. Only $d days left until the certificate expires"
 exit 2
 fi
-
+fi
 
