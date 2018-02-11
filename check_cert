@@ -1,10 +1,11 @@
 #!/bin/bash
-year="$(echo | openssl s_client -servername $1 -connect $1:$2 2>/dev/null | openssl x509 -noout -dates | sed -n 2p | cut -d "=" -f2 | cut -d " " -f4)"
-month="$(echo | openssl s_client -servername $1 -connect $1:$2 2>/dev/null | openssl x509 -noout -dates | sed -n 2p | cut -d "=" -f2 | cut -d " " -f1)"
-day="$(echo | openssl s_client -servername $1 -connect $1:$2 2>/dev/null | openssl x509 -noout -dates | sed -n 2p | cut -d "=" -f2 | cut -d " " -f2)"
-g="$(date | cut -d  " " -f4 )"
-a="$(date | cut -d  " " -f2 )"
-i="$(date | cut -d  " " -f7 )"
+space="$(echo | openssl s_client -servername $1 -connect $1:$2 2>/dev/null | openssl x509 -noout -dates | sed -n 2p)"
+year="$(echo $space| cut -d "=" -f2 | cut -d " " -f4)"
+month="$(echo $space| cut -d "=" -f2 | cut -d " " -f1)"
+day="$(echo $space| cut -d "=" -f2 | cut -d " " -f2)"
+g="$(date +%d/%b/%Y | cut -d "/" -f1)"
+a="$(date +%d/%b/%Y | cut -d "/" -f2)"
+i="$(date +%d/%b/%Y | cut -d "/" -f3)"
 
 ##
 if [[ $a == "Jan" ]]; then
@@ -60,7 +61,7 @@ dmonth=12
 fi
 let "d= $day - $g"
 let "diff= $dmonth - $dm"
-###
+##
 if (("$year" > "$i")); then
 echo "OK. Certificate for $1 is valid till ---- $day $month $year "
 exit 0
@@ -74,3 +75,5 @@ else
 echo "Warning. Only $d days left until the certificate expires"
 exit 2
 fi
+
+
