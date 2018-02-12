@@ -78,10 +78,13 @@ elif [ "$year" -eq "$i" ] && [ "$diff" -ge 1 ]; then
 echo "OK. Certificate for $1 is valid till ---- $day $month $year "
 exit 0
 elif [ "$year" -eq "$i" ] && [ "$diff" -eq 0 ] && [ "$d" -ge 7 ]; then
-echo "Warning. Only $d days left until the certificate expires"
+echo "WARNING! Only $d days left until the certificate expires"
 exit 1
+elif [ "$year" -eq "$i" ] && [ "$diff" -eq 0 ] && [ "$d" -le 7 ] && [ "$d" -eq 0 ]; then
+echo "CRITICAL! Only $d days left until the certificate expires"
+exit 2
 else
-echo "Warning. Only $d days left until the certificate expires"
+echo "CRITICAL! Certificate has been expired"
 exit 2
 fi
 fi
